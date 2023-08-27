@@ -1,8 +1,8 @@
 # ---------------------- BUILD IMAGE ---------------------------------------
-FROM golang:1.21-alpine3.17 as builder
+FROM golang:1.21-alpine3.18 as builder
 
 ENV GOCARBON_VERSION=0.18.0
-ENV CARBONAPI_VERSION=0.17.0
+ENV CARBONAPI_VERSION=0.17.1
 ENV GRAFANA_VERSION=9.3.1
 ENV GOPATH=/opt/go
 
@@ -24,7 +24,7 @@ WORKDIR ${GOPATH}
 RUN \
   export PATH="${PATH}:${GOPATH}/bin" && \
   mkdir -p \
-    /var/log/go-carbon && \
+  /var/log/go-carbon && \
   git clone https://github.com/lomik/go-carbon.git
 
 WORKDIR ${GOPATH}/go-carbon
@@ -44,7 +44,7 @@ WORKDIR ${GOPATH}
 RUN \
   export PATH="${PATH}:${GOPATH}/bin" && \
   mkdir -p \
-    /var/log/carbonapi && \
+  /var/log/carbonapi && \
   git clone https://github.com/go-graphite/carbonapi.git
 
 WORKDIR ${GOPATH}/carbonapi
@@ -58,11 +58,11 @@ RUN \
   mv carbonapi /tmp/carbonapi
 
 # ------------------------------ RUN IMAGE --------------------------------------
-FROM alpine:3.17.0
+FROM alpine:3.18.0
 
 ENV TZ='Europe/Amsterdam'
 
-COPY --from=builder /tmp/grafana/bin/grafana-cli           /usr/bin/grafana-cli 
+COPY --from=builder /tmp/grafana/bin/grafana-cli           /usr/bin/grafana-cli
 COPY --from=builder /tmp/grafana/bin/grafana-server        /usr/sbin/grafana-server
 COPY --from=builder /tmp/grafana/conf                      /usr/share/grafana/conf
 COPY --from=builder /tmp/grafana/public                    /usr/share/grafana/public
