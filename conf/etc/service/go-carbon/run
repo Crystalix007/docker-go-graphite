@@ -1,3 +1,4 @@
 #!/bin/bash
 
+mkdir /var/lib/graphite/whisper
 exec /usr/bin/go-carbon -config=/etc/go-carbon/go-carbon.conf -daemon=false 2>&1 >> /var/log/go-carbon.log
